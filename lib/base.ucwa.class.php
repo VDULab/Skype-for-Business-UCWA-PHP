@@ -18,6 +18,7 @@ class ucwa_base {
 	protected static $ucwa_path_user = "";
 	protected static $ucwa_path_xframe = "";
 	protected static $ucwa_path_application = "";
+	protected static $ucwa_path_application_fq = "";
 	protected static $ucwa_path_conversation = "";
 	protected static $ucwa_path_events = "";
 	

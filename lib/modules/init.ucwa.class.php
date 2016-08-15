@@ -8,9 +8,11 @@ class UCWA_init extends ucwa_base {
 	*************************************************/
 	function __construct($fqdn) {		
 		// FQDN
-		$link = parse_url($fqdn);
-		self::$ucwa_fqdn = $link["scheme"] . "://" . $link["host"];
-		
+		if ( !empty( $fqdn ) ) {
+			$link = parse_url($fqdn);
+			self::$ucwa_fqdn = $link["scheme"] . "://" . $link["host"];
+		}
+
 		// Do AutoDiscover
 		if ( self::autodiscover() ) {
 			// Get OAuth URL
