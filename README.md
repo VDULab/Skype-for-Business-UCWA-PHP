@@ -1,5 +1,7 @@
 # Skype for Business UCWA PHP
 
+Forked from [JulioECastro/Skype-for-Business-UCWA-PHP](https://github.com/wapacro/Skype-for-Business-UCWA-PHP)
+
 ## Index
 1. About<br>
 [1.1 What is Skype for Business?](#11-what-is-skype-for-business)<br>
@@ -215,3 +217,12 @@ To avoid `HTTP/1.1 410 Gone` you should always delete your applications at the e
 
 ### 2.11 Request workflow
 ![UCWA Workflow](https://raw.githubusercontent.com/wapacro/Skype-for-Business-UCWA-PHP/master/docs/img/ucwa_workflow.png)
+
+
+## 3 Changelog 
+
+#### 0.1.0
+
+- Initial fork from JulioECastro/Skype-for-Business-UCWA-PHP
+- Organized files into Composer package
+
