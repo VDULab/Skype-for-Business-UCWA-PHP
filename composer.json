@@ -1,0 +1,26 @@
+{
+    "name": "waschick/skypeforbusiness",
+    "description": "PHP library for connecting via UCWA to Skype for Business (server and online). Forked from JulioECastro/Skype-for-Business-UCWA-PHP",
+    "keywords": ["skype", "skype for business", "ucwa", "lync", "microsoft", "bot"],
+    "license": "BSD 2-Clause",
+    "authors": [
+        {
+            "name": "Andy Waschick",
+            "email": "waschick@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.5.0"
+    },
+    "autoload": {
+        "psr-0": {
+            "SkypeForBusiness": "src/"
+        }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "0.1-dev"
+        }
+    },
+    "minimum-stability": "stable"
+}

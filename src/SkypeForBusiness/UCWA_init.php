@@ -1,5 +1,7 @@
-<?php
+<?php namespace SkypeForBusiness;
 // UCWA Class
+
+use SkypeForBusiness\ucwa_base;
 
 class UCWA_init extends ucwa_base {
 	

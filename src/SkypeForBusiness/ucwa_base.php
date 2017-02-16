@@ -1,7 +1,4 @@
-<?php
-	/*
-	 *	UCWA-Class Base
-	*/
+<?php namespace SkypeForBusiness;
 
 class ucwa_base {
 	/*************************************************
@@ -74,12 +71,3 @@ class ucwa_base {
 		);	
 	}
 }
-
-
-// "Init"-Modul
-require( "modules/init.ucwa.class.php" );
-
-// "Use"-Modul
-require( "modules/use.ucwa.class.php" );
-
-?>
