@@ -1,9 +1,9 @@
 <?php namespace SkypeForBusiness;
-// UCWA Class
 
-use SkypeForBusiness\ucwa_base;
+use SkypeForBusiness\Base;
 
-class UCWA_use extends ucwa_base {
+class UseConnection extends Base 
+{
 	/*************************************************
 	//	Variables
 	*************************************************/

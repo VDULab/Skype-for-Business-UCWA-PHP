@@ -1,6 +1,7 @@
 <?php namespace SkypeForBusiness;
 
-class ucwa_base {
+class Base 
+{
 	/*************************************************
 	//	Variables
 	*************************************************/
