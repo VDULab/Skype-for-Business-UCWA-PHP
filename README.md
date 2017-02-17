@@ -226,3 +226,19 @@ To avoid `HTTP/1.1 410 Gone` you should always delete your applications at the e
 - Initial fork from JulioECastro/Skype-for-Business-UCWA-PHP
 - Organized files into Composer package
 
+#### 0.1.1
+
+- Added in config via an initialization array, e.g.: 
+
+```
+    $skype_config = [
+        'ucwa_autodiscover' => 'https://webdir.online.lync.com/autodiscover/autodiscoverservice.svc/root',
+        'ucwa_user' => 'beavis',
+        'ucwa_password' => 'firekicksass'
+    ];
+
+    $init = new InitConnection('http://local.services.myproject.com:8001', $skype_config);
+```
+
+
+

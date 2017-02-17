@@ -28,6 +28,19 @@ class Base
 	protected static $ucwa_user = "";
 	protected static $ucwa_pass = "";
 	
+	public function __construct(Array $config = []) 
+	{	
+		// override the static properties defining the class config 
+		foreach ($config as $key => $setting) {
+			if (property_exists($this, $key)) {
+				$this::$$key = $setting;
+			}
+		}
+		
+	}
+
+
+
 	/*************************************************
 	//	Helper methods
 	*************************************************/

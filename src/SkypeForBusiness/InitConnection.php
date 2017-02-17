@@ -8,7 +8,11 @@ class InitConnection extends Base
 	/*************************************************
 	//	Constructor
 	*************************************************/
-	function __construct($fqdn) {		
+	function __construct($fqdn, Array $config = []) {		
+		
+		// to start with, let's pass any configuration values into the base class
+		parent::__construct($config);
+
 		// FQDN
 		if ( !empty( $fqdn ) ) {
 			$link = parse_url($fqdn);
