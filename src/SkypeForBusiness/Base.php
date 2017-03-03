@@ -32,11 +32,10 @@ class Base
 	{	
 		// override the static properties defining the class config 
 		foreach ($config as $key => $setting) {
-			if (property_exists($this, $key)) {
-				$this::$$key = $setting;
+			if (isset(self::$$key)) {
+				self::$$key = $setting;
 			}
 		}
-		
 	}
 
 
