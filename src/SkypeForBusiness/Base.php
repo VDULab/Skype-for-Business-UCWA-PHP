@@ -49,6 +49,9 @@ class Base {
       if (isset(self::$$key)) {
         self::$$key = $setting;
       }
+      if ($key == 'proxy') {
+        self::$curl_base_config = self::$curl_base_config + array(CURLOPT_PROXY => $setting);
+      }
     }
   }
 
