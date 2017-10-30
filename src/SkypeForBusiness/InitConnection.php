@@ -46,11 +46,8 @@ class InitConnection extends Base {
    */
   private static function autodiscover() {
     $curl = curl_init();
-    curl_setopt_array($curl, array(
+    curl_setopt_array($curl, self::$curl_base_config + array(
       CURLOPT_HEADER => FALSE,
-      CURLOPT_RETURNTRANSFER => TRUE,
-      CURLOPT_SSL_VERIFYPEER => FALSE,
-      CURLOPT_SSL_VERIFYHOST => FALSE,
       CURLOPT_URL => self::$ucwa_autodiscover,
       CURLOPT_HTTPHEADER => self::getDefaultHeaders(),
       CURLOPT_TIMEOUT => 15,
