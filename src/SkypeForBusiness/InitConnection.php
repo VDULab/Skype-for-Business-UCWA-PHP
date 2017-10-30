@@ -52,10 +52,7 @@ class InitConnection extends Base {
       CURLOPT_SSL_VERIFYPEER => FALSE,
       CURLOPT_SSL_VERIFYHOST => FALSE,
       CURLOPT_URL => self::$ucwa_autodiscover,
-      CURLOPT_HTTPHEADER => array(
-        "Accept: application/json",
-        // "X-Ms-Origin: " . self::$ucwa_fqdn,
-      ),
+      CURLOPT_HTTPHEADER => self::getDefaultHeaders(),
       CURLOPT_TIMEOUT => 15,
     ));
 
@@ -89,18 +86,12 @@ class InitConnection extends Base {
    */
   private static function getOauthLink() {
     $curl = curl_init();
-    curl_setopt_array($curl, array(
+    curl_setopt_array($curl, self::$curl_base_config + array(
       CURLOPT_HEADER => TRUE,
       CURLOPT_NOBODY => TRUE,
-      CURLOPT_RETURNTRANSFER => TRUE,
-      CURLOPT_SSL_VERIFYPEER => FALSE,
-      CURLOPT_SSL_VERIFYHOST => FALSE,
       CURLOPT_URL => self::$ucwa_baseserver . self::$ucwa_path_user,
       CURLOPT_REFERER => self::$ucwa_baseserver . self::$ucwa_path_xframe,
-      CURLOPT_HTTPHEADER => array(
-        "Accept: application/json",
-        // "X-Ms-Origin: " . self::$ucwa_fqdn,
-      ),
+      CURLOPT_HTTPHEADER => self::getDefaultHeaders(),
       CURLOPT_TIMEOUT => 15,
     ));
 
@@ -134,17 +125,14 @@ class InitConnection extends Base {
    */
   private static function getApplicationLink() {
     $curl = curl_init();
-    curl_setopt_array($curl, array(
+    curl_setopt_array($curl, self::$curl_base_config + array(
       CURLOPT_HEADER => FALSE,
-      CURLOPT_RETURNTRANSFER => TRUE,
-      CURLOPT_SSL_VERIFYPEER => FALSE,
-      CURLOPT_SSL_VERIFYHOST => FALSE,
       CURLOPT_URL => self::$ucwa_baseserver . self::$ucwa_path_user,
       CURLOPT_REFERER => self::$ucwa_baseserver . self::$ucwa_path_xframe,
-      CURLOPT_HTTPHEADER => array(
-        "Accept: application/json",
-        "Authorization: Bearer " . self::$ucwa_accesstoken,
-        "X-Ms-Origin: " . self::$ucwa_fqdn,
+      CURLOPT_HTTPHEADER => self::getDefaultHeaders(
+        array(
+          "Authorization: Bearer " . self::$ucwa_accesstoken,
+        )
       ),
       CURLOPT_TIMEOUT => 15,
     ));
@@ -194,23 +182,13 @@ class InitConnection extends Base {
    */
   public static function getAccessToken($username, $password) {
     $curl = curl_init();
-    curl_setopt_array($curl, array(
+    curl_setopt_array($curl, self::$curl_base_config + array(
       CURLOPT_HEADER => FALSE,
-      CURLOPT_RETURNTRANSFER => TRUE,
-      CURLOPT_SSL_VERIFYPEER => FALSE,
-      CURLOPT_SSL_VERIFYHOST => FALSE,
       CURLOPT_URL => self::$ucwa_baseserver . self::$ucwa_path_oauth,
       CURLOPT_REFERER => self::$ucwa_baseserver . self::$ucwa_path_xframe,
       CURLOPT_POST => TRUE,
-      CURLOPT_POSTFIELDS => array(
-        "grant_type" => "password",
-        "username" => $username,
-        "password" => $password,
-      ),
-      CURLOPT_HTTPHEADER => array(
-        "Accept: application/json",
-        // "X-Ms-Origin: " . self::$ucwa_fqdn,
-      ),
+      CURLOPT_POSTFIELDS => self::getAccessTokenPostFields($username, $password),
+      CURLOPT_HTTPHEADER => self::getDefaultHeaders(),
       CURLOPT_TIMEOUT => 15,
     ));
 
@@ -221,8 +199,10 @@ class InitConnection extends Base {
     if ($status["http_code"] == 200) {
       $data = json_decode($response, TRUE);
       self::$ucwa_accesstoken = $data["access_token"];
-      self::$ucwa_user = $username;
-      self::$ucwa_pass = $password;
+      if (self::$ucwa_grant_type == "password") {
+        self::$ucwa_user = $username;
+        self::$ucwa_pass = $password;
+      }
 
       // Get application link.
       return self::getApplicationLink();
@@ -232,6 +212,27 @@ class InitConnection extends Base {
 
       return FALSE;
     }
+  }
+
+  /**
+   * Get post data for current $ucwa_grant_type.
+   *
+   * @param string $username
+   *   Username if grant_type == password.
+   * @param string $password
+   *   Password if grant_type == password.
+   *
+   * @return array
+   *   Post data.
+   */
+  private static function getAccessTokenPostFields($username, $password) {
+    $fields = array("grant_type" => self::$ucwa_grant_type);
+    if (self::$ucwa_grant_type == "password") {
+      $fields['username'] = $username;
+      $fields['password'] = $password;
+    }
+
+    return $fields;
   }
 
 }
