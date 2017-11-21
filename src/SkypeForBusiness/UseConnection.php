@@ -52,11 +52,8 @@ class UseConnection extends Base
 	*/
 	public static function registerApplication($agent) {		
 		$curl = curl_init();
-		curl_setopt_array($curl, array(
+		curl_setopt_array($curl, self::$curl_base_config + array(
 			CURLOPT_HEADER => false,
-			CURLOPT_RETURNTRANSFER => true,
-			CURLOPT_SSL_VERIFYPEER => false,
-			CURLOPT_SSL_VERIFYHOST => false,
 			CURLOPT_URL => self::$ucwa_baseserver . self::$ucwa_path_application,
 			CURLOPT_REFERER => self::$ucwa_baseserver . self::$ucwa_path_xframe,
 			CURLOPT_POST => true,
@@ -252,11 +249,8 @@ class UseConnection extends Base
 	*/
 	public static function deleteApplication() {
 		$curl = curl_init();
-		curl_setopt_array($curl, array(
+		curl_setopt_array($curl, self::$curl_base_config + array(
 			CURLOPT_HEADER => false,
-			CURLOPT_RETURNTRANSFER => true,
-			CURLOPT_SSL_VERIFYPEER => false,
-			CURLOPT_SSL_VERIFYHOST => false,
 			CURLOPT_URL => self::$ucwa_baseserver . self::$ucwa_path_application_fq,
 			CURLOPT_REFERER => self::$ucwa_baseserver . self::$ucwa_path_xframe,
 			CURLOPT_CUSTOMREQUEST => "DELETE",
