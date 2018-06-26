@@ -55,6 +55,7 @@ class InitConnection extends Base {
 
     $response = curl_exec($curl);
     $status = curl_getinfo($curl);
+    $status['curl_error'] = curl_error($curl);
     curl_close($curl);
 
     if ($status["http_code"] == 200) {
@@ -94,6 +95,8 @@ class InitConnection extends Base {
 
     $response = curl_exec($curl);
     $status = curl_getinfo($curl);
+    $status['curl_errors'] = curl_error($curl);
+
     curl_close($curl);
 
     if ($status["http_code"] == 401) {
@@ -136,6 +139,8 @@ class InitConnection extends Base {
 
     $response = curl_exec($curl);
     $status = curl_getinfo($curl);
+    $status['curl_errors'] = curl_error($curl);
+
     curl_close($curl);
 
     if ($status["http_code"] == 200) {
@@ -191,6 +196,7 @@ class InitConnection extends Base {
 
     $response = curl_exec($curl);
     $status = curl_getinfo($curl);
+    $status['curl_errors'] = curl_error($curl);
     curl_close($curl);
 
     if ($status["http_code"] == 200) {
@@ -207,7 +213,7 @@ class InitConnection extends Base {
     else {
       self::_error("Can't get an access token for Skype UCWA", $status);
 
-      return FALSE;
+      return $status;
     }
   }
 
