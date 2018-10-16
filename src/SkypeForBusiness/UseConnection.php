@@ -502,7 +502,7 @@ class UseConnection extends Base {
 		if ($status["http_code"] == 201) {
 			$data = json_decode($response, TRUE);
 			$join = $data['joinUrl'];
-			return true;
+			return $join;
 		} else {
 			self::_error("Can't create meeting for Skype UCWA", $status);	
 			return false;
