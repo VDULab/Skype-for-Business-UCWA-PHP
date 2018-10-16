@@ -1,9 +1,10 @@
-<?php namespace SkypeForBusiness;
+<?php
+
+namespace SkypeForBusiness;
 
 use SkypeForBusiness\Base;
 
-class UseConnection extends Base 
-{
+class UseConnection extends Base {
 	/*************************************************
 	//	Variables
 	*************************************************/
@@ -60,7 +61,7 @@ class UseConnection extends Base
 			CURLOPT_POSTFIELDS => json_encode(array(
 					"userAgent" => $agent,
 					"endpointId" => self::_generateUUID(),
-					"culture" => "de-CH"
+					"culture" => "it-IT"
 				)
 			),
 			CURLOPT_HTTPHEADER => array(
@@ -74,6 +75,7 @@ class UseConnection extends Base
 		
 		$response = curl_exec($curl);
 		$status = curl_getinfo($curl);
+		$status['full_response'] = $response;
 		curl_close($curl);
 		
 		if ($status["http_code"] == 201) {
@@ -82,6 +84,7 @@ class UseConnection extends Base
 			
 			self::$ucwa_path_conversation = $data["_embedded"]["communication"]["_links"]["startMessaging"]["href"];
 			self::$ucwa_path_events = $data["_links"]["events"]["href"];
+			self::$ucwa_path_meetings = $data["_embedded"]["onlineMeetings"]["_links"]["myOnlineMeetings"]["href"];
 			self::$ucwa_operationid = $keys[0];
 			
 			self::$ucwa_path_application_fq = $data["_links"]["self"]["href"];
@@ -470,6 +473,39 @@ class UseConnection extends Base
 			return false;
 		}
 	}
-}
 
-?>
+	public static function createMeeting($subject) {
+		$curl = curl_init();
+		curl_setopt_array($curl, self::$curl_base_config + array(
+			CURLOPT_HEADER => false,
+			CURLOPT_RETURNTRANSFER => true,
+			CURLOPT_URL => self::$ucwa_baseserver . self::$ucwa_path_meetings,
+			CURLOPT_REFERER => self::$ucwa_baseserver . self::$ucwa_path_xframe,
+			CURLOPT_POST => true,
+			CURLOPT_POSTFIELDS => json_encode(array(
+					"subject" => $subject,
+				)
+			),
+			CURLOPT_HTTPHEADER => array(
+				"Authorization: Bearer " . self::$ucwa_accesstoken,
+				"Content-Type: application/json",
+				"X-Ms-Origin: " . self::$ucwa_fqdn,
+			),
+			CURLOPT_TIMEOUT => 15,
+		));
+		
+		$response = curl_exec($curl);
+		$status = curl_getinfo($curl);
+		$status['response'] = $response;
+		curl_close($curl);
+		
+		if ($status["http_code"] == 201) {
+			$data = json_decode($response, TRUE);
+			$join = $data['joinUrl'];
+			return true;
+		} else {
+			self::_error("Can't create meeting for Skype UCWA", $status);	
+			return false;
+		}
+	}
+}

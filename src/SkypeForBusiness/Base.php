@@ -22,6 +22,7 @@ class Base {
   protected static $ucwa_path_application = "";
   protected static $ucwa_path_application_fq = "";
   protected static $ucwa_path_conversation = "";
+  protected static $ucwa_path_meetings = "";
   protected static $ucwa_path_events = "";
   protected static $ucwa_grant_type = "password";
   protected static $ucwa_use_ms_origin = TRUE;
@@ -107,6 +108,6 @@ class Base {
     if (self::$ucwa_use_ms_origin) {
       $headers[] = "X-Ms-Origin: " . self::$ucwa_fqdn;
     }
-    return $headers + $additional_headers;
+    return array_merge($headers, $additional_headers);
   }
 }

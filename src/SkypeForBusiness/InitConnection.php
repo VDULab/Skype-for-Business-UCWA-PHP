@@ -125,21 +125,24 @@ class InitConnection extends Base {
    */
   private static function getApplicationLink() {
     $curl = curl_init();
+    $headers = self::getDefaultHeaders(
+      array(
+        "Authorization: Bearer " . self::$ucwa_accesstoken,
+      )
+    );
     curl_setopt_array($curl, self::$curl_base_config + array(
       CURLOPT_HEADER => FALSE,
       CURLOPT_URL => self::$ucwa_baseserver . self::$ucwa_path_user,
       CURLOPT_REFERER => self::$ucwa_baseserver . self::$ucwa_path_xframe,
-      CURLOPT_HTTPHEADER => self::getDefaultHeaders(
-        array(
-          "Authorization: Bearer " . self::$ucwa_accesstoken,
-        )
-      ),
+      CURLOPT_HTTPHEADER => $headers,
       CURLOPT_TIMEOUT => 15,
     ));
 
     $response = curl_exec($curl);
     $status = curl_getinfo($curl);
     $status['curl_errors'] = curl_error($curl);
+    $status['full_response'] = $response;
+    $status['req_headers'] = $headers;
 
     curl_close($curl);
 
@@ -184,19 +187,26 @@ class InitConnection extends Base {
    */
   public static function getAccessToken($username, $password) {
     $curl = curl_init();
-    curl_setopt_array($curl, self::$curl_base_config + array(
-      CURLOPT_HEADER => FALSE,
+    $headers = array('Content-Type: application/x-www-form-urlencoded;charset=UTF-8'); // self::getDefaultHeaders();
+    $additional_options = self::$curl_base_config + array(
       CURLOPT_URL => self::$ucwa_baseserver . self::$ucwa_path_oauth,
       CURLOPT_REFERER => self::$ucwa_baseserver . self::$ucwa_path_xframe,
       CURLOPT_POST => TRUE,
-      CURLOPT_POSTFIELDS => self::getAccessTokenPostFields($username, $password),
-      CURLOPT_HTTPHEADER => self::getDefaultHeaders(),
+      CURLOPT_POSTFIELDS => 'grant_type=urn:microsoft.rtc:windows',
+      CURLOPT_HTTPHEADER => $headers,
       CURLOPT_TIMEOUT => 15,
-    ));
+      CURLOPT_HTTPAUTH => CURLAUTH_BASIC | CURLAUTH_NTLM,
+      CURLOPT_USERPWD => ':',
+    );
+    curl_setopt_array($curl, $additional_options);
 
     $response = curl_exec($curl);
     $status = curl_getinfo($curl);
     $status['curl_errors'] = curl_error($curl);
+    $status['full_response'] = $response;
+    $status['options'] = $additional_options;
+    $status['req_headers'] = $headers;
+
     curl_close($curl);
 
     if ($status["http_code"] == 200) {
@@ -206,7 +216,7 @@ class InitConnection extends Base {
         self::$ucwa_user = $username;
         self::$ucwa_pass = $password;
       }
-
+      self::_error('Got token.', $response);
       // Get application link.
       return self::getApplicationLink();
     }
