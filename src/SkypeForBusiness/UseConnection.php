@@ -8,13 +8,13 @@ class UseConnection extends Base {
   /*************************************************
   //  Variables
   *************************************************/
-  
+
   /*
    *  Server configuration
   */
   protected static $ucwa_path_send = "";
   protected static $ucwa_path_terminate = "";
-  
+
   /*************************************************
   //  Constructor
   *************************************************/
@@ -22,36 +22,36 @@ class UseConnection extends Base {
     if ( !empty( $token ) ) {
       self::$ucwa_accesstoken = $token;
     }
-    
+
     if ( !empty( $baseserver ) ) {
-      self::$ucwa_baseserver = $baseserver;  
+      self::$ucwa_baseserver = $baseserver;
     }
-    
+
     if ( !empty( $path_app ) ) {
-      self::$ucwa_path_application = $path_app;  
+      self::$ucwa_path_application = $path_app;
     }
-    
+
     if ( !empty( $path_xframe ) ) {
       self::$ucwa_path_xframe = $path_xframe;
     }
-    
+
     if ( !empty( $fqdn ) ) {
       $link = parse_url($fqdn);
-      self::$ucwa_fqdn = $link["scheme"] . "://" . $link["host"];  
+      self::$ucwa_fqdn = $link["scheme"] . "://" . $link["host"];
     }
   }
-  
+
   /*************************************************
   //  Main methods
   *************************************************/
-  
+
   /*
    *  (bool) registerApplication($agent)
    *  ######################################
    *
    *  Register the application
   */
-  public static function registerApplication($agent) {    
+  public static function registerApplication($agent) {
     $curl = curl_init();
     curl_setopt_array($curl, self::$curl_base_config + array(
       CURLOPT_HEADER => false,
@@ -72,29 +72,29 @@ class UseConnection extends Base {
       ),
       CURLOPT_TIMEOUT => 15,
     ));
-    
+
     $response = curl_exec($curl);
     $status = curl_getinfo($curl);
     $status['full_response'] = $response;
     curl_close($curl);
-    
-    if ($status["http_code"] == 201) {
+
+    if ($status["http_code"] == 201 || $status["http_code"] == 200) {
       $data = json_decode($response, true);
       $keys = array_keys($data["_embedded"]["communication"]);
-      
+
       self::$ucwa_path_conversation = $data["_embedded"]["communication"]["_links"]["startMessaging"]["href"];
       self::$ucwa_path_events = $data["_links"]["events"]["href"];
       self::$ucwa_path_meetings = $data["_embedded"]["onlineMeetings"]["_links"]["myOnlineMeetings"]["href"];
       self::$ucwa_operationid = $keys[0];
-      
+
       self::$ucwa_path_application_fq = $data["_links"]["self"]["href"];
       return true;
     } else {
-      self::_error("Can't register application for Skype UCWA", $status);  
+      self::_error("Can't register application for Skype UCWA", $status);
       return false;
-    }  
+    }
   }
-  
+
   /*
    *  (bool) createConversation($to, $subject)
    *  ######################################
@@ -127,19 +127,19 @@ class UseConnection extends Base {
       ),
       CURLOPT_TIMEOUT => 15,
     ));
-    
+
     $response = curl_exec($curl);
     $status = curl_getinfo($curl);
     curl_close($curl);
-    
-    if ($status["http_code"] == 201) {  
+
+    if ($status["http_code"] == 201) {
       return true;
     } else {
-      self::_error("Can't create conversation for Skype UCWA", $status);  
+      self::_error("Can't create conversation for Skype UCWA", $status);
       return false;
     }
   }
-  
+
   /*
    *  (bool/null) waitForAccept($recursive = true)
    *  ######################################
@@ -162,12 +162,12 @@ class UseConnection extends Base {
       ),
       CURLOPT_TIMEOUT => 30,
     ));
-    
+
     $response = curl_exec($curl);
     $status = curl_getinfo($curl);
     curl_close($curl);
-    
-    if ($status["http_code"] == 200) {  
+
+    if ($status["http_code"] == 200) {
       $data = json_decode($response, true);
       $return = false;
       foreach ($data["sender"] as $sender) {
@@ -180,8 +180,8 @@ class UseConnection extends Base {
                   // Get messaging links
 
                   self::$ucwa_path_send = $events["_embedded"]["messaging"]["_links"]["sendMessage"]["href"];
-                  self::$ucwa_path_terminate = $events["_embedded"]["messaging"]["_links"]["stopMessaging"]["href"];  
-                  
+                  self::$ucwa_path_terminate = $events["_embedded"]["messaging"]["_links"]["stopMessaging"]["href"];
+
                   $return = true;
                 }
               }
@@ -189,24 +189,24 @@ class UseConnection extends Base {
           }
         }
       }
-      
+
       self::$ucwa_path_events = $data["_links"]["next"]["href"];
-      
+
       if ($return) {
-        return true;  
+        return true;
       } else {
         if ($recursive) {
-          return self::waitForAccept($recursive);  
+          return self::waitForAccept($recursive);
         } else {
-          return true;  
+          return true;
         }
       }
     } else {
-      self::_error("Can't get events for Skype UCWA", $status);  
+      self::_error("Can't get events for Skype UCWA", $status);
       return false;
     }
   }
-  
+
   /*
    *  (bool) terminateConversation()
    *  ######################################
@@ -234,16 +234,16 @@ class UseConnection extends Base {
 
     $response = curl_exec($curl);
     $status = curl_getinfo($curl);
-    curl_close($curl);  
-    
+    curl_close($curl);
+
     if ($status["http_code"] == 204) {
       return true;
     } else {
-      self::_error("Can't terminate conversation for Skype UCWA", $status);  
-      return false;  
+      self::_error("Can't terminate conversation for Skype UCWA", $status);
+      return false;
     }
   }
-  
+
   /*
    *  (bool) deleteApplication()
    *  ######################################
@@ -263,19 +263,19 @@ class UseConnection extends Base {
       ),
       CURLOPT_TIMEOUT => 15,
     ));
-    
+
     $response = curl_exec($curl);
     $status = curl_getinfo($curl);
     curl_close($curl);
-    
+
     if ($status["http_code"] == 204) {
       return true;
     } else {
-      self::_error("Can't delete application for Skype UCWA", $status);  
-      return false;    
+      self::_error("Can't delete application for Skype UCWA", $status);
+      return false;
     }
   }
-  
+
   /*
    *  (bool) sendMessage($msg)
    *  ######################################
@@ -306,16 +306,16 @@ class UseConnection extends Base {
       ),
       CURLOPT_TIMEOUT => 20,
     ));
-    
+
     $response = curl_exec($curl);
     $status = curl_getinfo($curl);
-    curl_close($curl);  
-    
+    curl_close($curl);
+
     if ($status["http_code"] == 201) {
       return true;
     } else {
-      self::_error("Can't send message for Skype UCWA", $status);  
-      return false;  
+      self::_error("Can't send message for Skype UCWA", $status);
+      return false;
     }
   }
 
@@ -474,7 +474,7 @@ class UseConnection extends Base {
     }
   }
 
-  public static function createMeeting($subject) {
+  public static function createMeeting($subject, $options = array()) {
     $curl = curl_init();
     curl_setopt_array($curl, self::$curl_base_config + array(
       CURLOPT_HEADER => false,
@@ -482,9 +482,10 @@ class UseConnection extends Base {
       CURLOPT_URL => self::$ucwa_baseserver . self::$ucwa_path_meetings,
       CURLOPT_REFERER => self::$ucwa_baseserver . self::$ucwa_path_xframe,
       CURLOPT_POST => true,
-      CURLOPT_POSTFIELDS => json_encode(array(
+      CURLOPT_POSTFIELDS => json_encode(
+        array(
           "subject" => $subject,
-        )
+        ) + $options
       ),
       CURLOPT_HTTPHEADER => array(
         "Authorization: Bearer " . self::$ucwa_accesstoken,
@@ -493,18 +494,18 @@ class UseConnection extends Base {
       ),
       CURLOPT_TIMEOUT => 15,
     ));
-    
+
     $response = curl_exec($curl);
     $status = curl_getinfo($curl);
     $status['response'] = $response;
     curl_close($curl);
-    
+
     if ($status["http_code"] == 201) {
       $data = json_decode($response, TRUE);
-      $join = $data['joinUrl'];
-      return $join;
+      // $join = $data['joinUrl'];
+      return $data;
     } else {
-      self::_error("Can't create meeting for Skype UCWA", $status);  
+      self::_error("Can't create meeting for Skype UCWA", $status);
       return false;
     }
   }

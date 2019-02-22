@@ -34,6 +34,7 @@ class Base {
   protected static $ucwa_operationid = "";
   protected static $ucwa_user = "";
   protected static $ucwa_pass = "";
+  protected static $expire = 0;
 
   /*
    *  Base cURL config.
@@ -97,7 +98,9 @@ class Base {
       "accesstoken" => self::$ucwa_accesstoken,
       "baseserver" => self::$ucwa_baseserver,
       "path_application" => self::$ucwa_path_application,
+      "ucwa_path_application_fq" => self::$ucwa_path_application_fq,
       "path_xframe" => self::$ucwa_path_xframe,
+      "expire" => self::$expire,
     );
   }
 
@@ -110,4 +113,5 @@ class Base {
     }
     return array_merge($headers, $additional_headers);
   }
+
 }
