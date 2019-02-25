@@ -64,7 +64,11 @@ class InitConnection extends Base {
       $link_frm = parse_url($data["_links"]["xframe"]["href"]);
 
       self::$ucwa_baseserver = $link_usr["scheme"] . "://" . (substr($link_usr["host"], -1) == "/" ? substr($link_usr["host"], 0, -1) : $link_usr["host"]);
-      self::$ucwa_path_user = (substr($link_usr["path"], 0, 1) == "/" ? "" : "/") . $link_usr["path"] . "?" . $link_usr["query"];
+      $user_path = (substr($link_usr["path"], 0, 1) == "/" ? "" : "/") . $link_usr["path"];
+      if (isset($link_usr["query"])) {
+        $user_path .= "?" . $link_usr["query"];
+      }
+      self::$ucwa_path_user = $user_path;
       self::$ucwa_path_xframe = (substr($link_frm["path"], 0, 1) == "/" ? "" : "/") . $link_frm["path"];
 
       return TRUE;
@@ -212,6 +216,7 @@ class InitConnection extends Base {
     if ($status["http_code"] == 200) {
       $data = json_decode($response, TRUE);
       self::$ucwa_accesstoken = $data["access_token"];
+      self::$expire = $data["expires_in"];
       if (self::$ucwa_grant_type == "password") {
         self::$ucwa_user = $username;
         self::$ucwa_pass = $password;
