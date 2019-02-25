@@ -18,7 +18,7 @@ class UseConnection extends Base {
   /*************************************************
   //  Constructor
   *************************************************/
-  function __construct($token = "", $baseserver = "", $path_app = "", $path_xframe = "", $fqdn = "") {
+  function __construct($token = "", $baseserver = "", $path_app = "", $path_xframe = "", $fqdn = "", $meetings_path = "") {
     if ( !empty( $token ) ) {
       self::$ucwa_accesstoken = $token;
     }
@@ -38,6 +38,10 @@ class UseConnection extends Base {
     if ( !empty( $fqdn ) ) {
       $link = parse_url($fqdn);
       self::$ucwa_fqdn = $link["scheme"] . "://" . $link["host"];
+    }
+
+    if ( !empty( $meetings_path ) ) {
+      self::$ucwa_path_meetings = $meetings_path;
     }
   }
 

@@ -99,6 +99,7 @@ class Base {
       "baseserver" => self::$ucwa_baseserver,
       "path_application" => self::$ucwa_path_application,
       "ucwa_path_application_fq" => self::$ucwa_path_application_fq,
+      "ucwa_path_meetings" => self::$ucwa_path_meetings,
       "path_xframe" => self::$ucwa_path_xframe,
       "expire" => self::$expire,
     );
