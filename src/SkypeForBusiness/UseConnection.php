@@ -480,9 +480,9 @@ class UseConnection extends Base {
 
   public static function createMeeting($subject, $options = array()) {
     $curl = curl_init();
-    $postfields = 
-    array(
+    $postfields = array(
       "subject" => $subject,
+      "phoneUserAdmission" => TRUE,
     ) + $options;
     self::_error('Meeting data: ', $postfields);
     curl_setopt_array($curl, self::$curl_base_config + array(
@@ -505,7 +505,7 @@ class UseConnection extends Base {
     $status['response'] = $response;
     curl_close($curl);
 
-    if ($status["http_code"] == 201) {
+    if ($status["http_code"] == 201 || $status["http_code"] == 200) {
       $data = json_decode($response, TRUE);
       // $join = $data['joinUrl'];
       return $data;
