@@ -482,7 +482,7 @@ class UseConnection extends Base {
     $curl = curl_init();
     $postfields = array(
       "subject" => $subject,
-      "phoneUserAdmission" => TRUE,
+      "phoneUserAdmission" => 'Enabled',
     ) + $options;
     self::_error('Meeting data: ', $postfields);
     curl_setopt_array($curl, self::$curl_base_config + array(
