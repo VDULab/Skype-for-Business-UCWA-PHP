@@ -476,17 +476,18 @@ class UseConnection extends Base {
 
   public static function createMeeting($subject, $options = array()) {
     $curl = curl_init();
+    $postfields = 
+    array(
+      "subject" => $subject,
+    ) + $options;
+    self::_error('Meeting data: ', $postfields);
     curl_setopt_array($curl, self::$curl_base_config + array(
       CURLOPT_HEADER => false,
       CURLOPT_RETURNTRANSFER => true,
       CURLOPT_URL => self::$ucwa_baseserver . self::$ucwa_path_meetings,
       CURLOPT_REFERER => self::$ucwa_baseserver . self::$ucwa_path_xframe,
       CURLOPT_POST => true,
-      CURLOPT_POSTFIELDS => json_encode(
-        array(
-          "subject" => $subject,
-        ) + $options
-      ),
+      CURLOPT_POSTFIELDS => json_encode($postfields),
       CURLOPT_HTTPHEADER => array(
         "Authorization: Bearer " . self::$ucwa_accesstoken,
         "Content-Type: application/json",
