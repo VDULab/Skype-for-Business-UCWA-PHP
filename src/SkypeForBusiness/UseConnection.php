@@ -483,6 +483,8 @@ class UseConnection extends Base {
     $postfields = array(
       "subject" => $subject,
       "phoneUserAdmission" => 'Enabled',
+      "lobbyBypassForPhoneUsers" => "Enabled",
+      "accessLevels" => "Everyone"
     ) + $options;
     self::_error('Meeting data: ', $postfields);
     curl_setopt_array($curl, self::$curl_base_config + array(
