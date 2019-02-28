@@ -514,4 +514,33 @@ class UseConnection extends Base {
       return false;
     }
   }
+
+  public static function deleteMeeting($meetingId) {
+    $curl = curl_init();
+    curl_setopt_array($curl, self::$curl_base_config + array(
+      CURLOPT_HEADER => false,
+      CURLOPT_RETURNTRANSFER => true,
+      CURLOPT_CUSTOMREQUEST => 'DELETE',
+      CURLOPT_URL => self::$ucwa_baseserver . self::$ucwa_path_meetings . "/" . $meetingId,
+      CURLOPT_REFERER => self::$ucwa_baseserver . self::$ucwa_path_xframe,
+      CURLOPT_HTTPHEADER => array(
+        "Authorization: Bearer " . self::$ucwa_accesstoken,
+        "Content-Type: application/json",
+        "X-Ms-Origin: " . self::$ucwa_fqdn,
+      ),
+      CURLOPT_TIMEOUT => 15,
+    ));
+
+    $response = curl_exec($curl);
+    $status = curl_getinfo($curl);
+    $status['response'] = $response;
+    curl_close($curl);
+
+    if ($status["http_code"] == 204 || $status["http_code"] == 200) {
+      return true;
+    } else {
+      self::_error("Can't delete meeting for Skype UCWA", $status);
+      return false;
+    }
+  }
 }
